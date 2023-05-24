@@ -1,0 +1,32 @@
+seed: 42
+device: "mps"  # cpu or cuda or mps
+
+
+data:
+    batch_size: 100
+    num_workers: 0
+
+
+model:
+    peer_ratio: 0.03  # weight of peer normalization loss relative to main loss
+    peer_gamma: 0.9  # Momentum to use for the running mean in peer normalization loss
+    hidden_dim: 1000  # Height of hidden layer
+    num_layers: 3  # Number of layers in model
+    theta: 10  # Threshold used in FF Layer
+    
+
+train:
+    epochs: 100
+    lr: 1e-3  # Optimizer learning rate
+    lamda: 3e-4  # Weight decay 
+    gamma: 0.9  # Optimizer momentum
+    head_lr: 1e-2 
+    head_lamda: 3e-3
+    
+    save_model: True
+    test_model: True
+
+
+hydra:
+    run:
+        dir: logs
