@@ -1,7 +1,5 @@
-import sys
 import math
 import torch as th
-from utils import layer_norm
 from omegaconf import DictConfig
 
 
@@ -33,8 +31,8 @@ class LinearLayerFF(th.nn.Module):
         th.nn.init.zeros_(self.linear.bias)
         
     def set_loss_accuracy(self, z, labels):
-        # logits = th.sum(z**2, dim=-1, keepdim=True) - self.threshold
-        logits = th.sum(z**2, dim=-1, keepdim=True) - z.shape[1]
+        logits = th.sum(z**2, dim=-1, keepdim=True) - self.threshold
+        # logits = th.sum(z**2, dim=-1, keepdim=True) - z.shape[1]
         self.loss = self.loss_func(logits, labels)  # Equation 1
         
         with th.no_grad():
@@ -64,12 +62,11 @@ class LinearLayerFF(th.nn.Module):
             
         x = x.detach()
         x = th.nn.functional.layer_norm(x, x.size())
-        # x = layer_norm(x)
         return x
     
     
 class SequentialFF(th.nn.Module):
-    def __init__(self, *args: LinearLayerFF):
+    def __init__(self, *args: th.nn.Module):  # Typing not so good here
         super(SequentialFF, self).__init__()
         
         self.model = th.nn.ModuleList([args[0]])
